@@ -25,7 +25,7 @@ cm4 8gb wifi nvme       (4108000) on all above
 # Main bug, no shell on video screen , no video after setup
 Fedora Versions tested
 '''
-fedora 38 server
+* testing fedora 38 server
 fedora 38 minimal
 fedora 38 core os bare metal
 fedora 39 beta server
@@ -51,7 +51,7 @@ See next section for arm-image-installer tests
        sudo apt install rpi-imager
 ```
 
-    Direct Downloads of Rasbery PI os
+###Direct Downloads of Rasbery PI os
     
     https://www.raspberrypi.com/software/operating-systems/
   
@@ -61,8 +61,11 @@ See next section for arm-image-installer tests
     5. Use imager to Flash your USB device
     6. Put USB device into RPI4, turn on and boot
 
-These are my working RPI images on all the above hardware.  Rasberian 64 bit via Imager menu
-  Manjaro Arm
+###These are my working RPI images on all the above hardware.  
+'''
+Rasberian 64 bit via Imager
+Manjaro Arm
+'''
 
 # CM4 install sources and instructions
      The best web instructions :
