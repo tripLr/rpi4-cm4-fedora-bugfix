@@ -155,7 +155,7 @@ the tool you download from github does 3 things.
 # Post writing to device cleanup
 > Fedora Server and others use LVM for the / (root) directory and the entire drive space is not accessable yet.
 > The image is not automaticlly adjusted to the size of the drive beyond the inital 8GB image.
-> The instructions to do this are quite long and included in the Fedora-Resize-Image.md file included 
+> The instructions to do this are quite long and included in the Fedora-Image-Resize.md file included 
 > in this archive
 
 
