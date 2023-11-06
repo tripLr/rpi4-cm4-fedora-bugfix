@@ -97,25 +97,31 @@ the tool you download from github does 3 things.
   4. Status light should show on, or bootloader ready for flashing emmc or nvme or both 
 
 # Install usbboot tool for CM4 < Required >
-    This is necessary to access and edit the bootloader 
-        and access and write to the mass-storage-device on your CM4
-        and allows read-write access to the device to find and fix bugs
+>    This method is described in the RPI compute module instructions
+>   (https://www.raspberrypi.com/documentation/computers/compute-module.html)
+
+### This is necessary to access and edit the bootloader and mass storage on the CM4
+> This allows  access and write to the mass-storage-device on your CM4
+> and allows read-write access to the device to find and fix bugs
   
   1. Download usbboot from github source and make tool
 ```
-        git clone --depth=1 https://github.com/raspberrypi/usbboot
-        cd usbboot
-        make
+git clone --depth=1 https://github.com/raspberrypi/usbboot
+cd usbboot
+make
 ```
-  2. You will notice the binary named rpiboot and several folders
-  3. The main tool to access the CM4 emmc and or nvme is the mass-storage-gadget
-        sudo ./rpiboot -d mass-storage-gadget
-    The rpiboot binary writes the mass-storage-gaget boot binary temporarily to the CM4 bootloader
-        then boots that minimal linux bootloader and connects the USB slave to the EMMC and or NVME
+  2. You created the usbboot folder, and compiled the rpiboot binary and created 
+     several folders with settings, configurations and scripts
+  3. The main folder is the bootloader tool to access the CM4 EMMC and or NVME
+     in the mass-storage-gadget folder
+```
+cd usbboot
+sudo ./rpiboot -d mass-storage-gadget
+```
+>    The rpiboot binary writes the mass-storage-gaget boot binary temporarily to the CM4 bootloader
+>        then boots that minimal linux bootloader and connects the USB slave to the EMMC and or NVME
 
-# You now should have access the CM4 mass-storage via the slave connection
->    This method is described in the RPI compute module instructions
->   (https://www.raspberrypi.com/documentation/computers/compute-module.html)
+# Access the CM4 mass-storage via the slave connection
 
 >    After rpiboot completes, you will see a new device appear; 
 >    this is commonly /dev/sda on a Raspberry Pi but it could be another location 
@@ -132,8 +138,7 @@ the tool you download from github does 3 things.
   1. Open the Imager app and write your image of choice to the emmc or nvme storage on the CM4
   2. Unplug the Jumper or turn off the slave switch and boot your CM4
 
- 
-# Writing to the CM4 eMMC or via dd (Linux)
+# OR Write to the CM4 eMMC or via dd (Linux)
 
 >    You now need to write a raw OS image (such as Raspberry Pi OS) to the device. 
 >    Note the following command may take some time to complete, depending on the size of the image: (Change /dev/sdX to the appropriate device.)
@@ -141,27 +146,69 @@ the tool you download from github does 3 things.
 ```
     sudo dd if=raw_os_image_of_your_choice.img of=/dev/sdX bs=4MiB
 ```
->
->    Once the image has been written, unplug and re-plug the USB; you should see two partitions appear (for Raspberry Pi OS) in /dev. In total, you should see something similar to this:
->
->    /dev/sdX    <- Device
->    /dev/sdX1   <- First partition (FAT)
->    /dev/sdX2   <- Second partition (Linux filesystem)
->
->    The /dev/sdX1 and /dev/sdX2 partitions can now be mounted normally.
->
->    Make sure J4 (USB SLAVE BOOT ENABLE) / J2 (nRPI_BOOT) is set to the disabled position and/or nothing is plugged into the USB slave port. Power cycling the IO board should now result in the Compute Module booting from eMMC.
+# OR write to the CM4 using the Fedora 
+
+# OR Write image to the CM4 mass storage with the approved arm-image-installer from Fedora 
+> See separate Howto in this archive
+
+# Check to see if image was written  
+
+> Once the image has been written, unplug and re-plug the USB; 
+> you should see two partitions appear (for Raspberry Pi OS) in /dev. In total, you should see something similar to this:
+```
+NAME         MAJ:MIN RM   SIZE RO TYPE MOUNTPOINTS
+sdb            8:16   1  29.7G  0 disk 
+├─sdb1         8:17   1   600M  0 part 
+├─sdb2         8:18   1     1G  0 part 
+└─sdb3         8:19   1   5.4G  0 part 
+mmcblk0      179:0    0  29.1G  0 disk 
+├─mmcblk0p1  179:1    0 457.8M  0 part /boot
+└─mmcblk0p2  179:2    0  28.6G  0 part /
+mmcblk0boot0 179:32   0     4M  1 disk 
+mmcblk0boot1 179:64   0     4M  1 disk 
+zram0        253:0    0  11.4G  0 disk [SWAP]
+```
+> This example is a CM4 writing to a USB stick with a 32gb SDcard
+> Its exactly the same as writing to a EMMC on another CM4 for the Vendor name in the Block ID
+> creating an alias to see all the folder information is easy
+```
+> alias LSBLK='lsblk -o NAME,SIZE,VENDOR,MODEL,TYPE,FSTYPE,UUID,MOUNTPOINT'
+> LSBLK
+
+NAME           SIZE VENDOR   MODEL          TYPE FSTYPE      UUID                                   MOUNTP
+sdb           29.7G Generic  STORAGE DEVICE disk                                                    
+├─sdb1         600M                         part vfat        6E0C-FE6D                              
+├─sdb2           1G                         part xfs         f9ef8131-4212-4194-bbcb-3f04626f34a4   
+└─sdb3         5.4G                         part LVM2_member 7IeeNH-xPfj-gtdm-q63k-MkND-Mqg0-WRg5Ni 
+mmcblk0       29.1G                         disk                                                    
+├─mmcblk0p1  457.8M                         part vfat        14E9-C189                              /boot
+└─mmcblk0p2   28.6G                         part ext4        d0365520-aedf-4d98-a77b-350122736c3f   /
+mmcblk0boot0     4M                         disk                                                    
+mmcblk0boot1     4M                         disk                                                    
+zram0         11.4G                         disk                                                    [SWAP]
+
+```
+# Examine the file tree written to your storage
+> Fedora creates 3 partitions , while RPi and other RPI operationg systems only create 2,
+> The RPI boot folder and the Root Filesystem
+
+### Here is our 3 partitions
+>    /dev/sdb    <- Device
+>    /dev/sdb1   <- First partition (FAT)
+>                    This contains the RPi boot files
+>    /dev/sdb2   <- Second partition (boot)
+>                    This contains the EFI Grub2 bootloader
+>    /dev/sdb3   <- Third partition (Linux LVM2_member filesystem)
+>                    This Contains the root File System
 
 # Post writing to device cleanup
 > Fedora Server and others use LVM for the / (root) directory and the entire drive space is not accessable yet.
-> The image is not automaticlly adjusted to the size of the drive beyond the inital 8GB image.
+> Note the STORAGE DEVICE is 29.72G and the /dev/sdb3 LVM2_member partition is only 5.4G
+> The image is not automaticlly adjusted to the size of the drive beyond the inital decompressed image size.
 > The instructions to do this are quite long and included in the Fedora-Image-Resize.md file included 
 > in this archive
 
-
 # WIP Todo List
-# Write image to the CM4 mass storage with the approved arm-image-installer from Fedora 
-# Post Writing Fedora Image 
 # First boot and Setup 
 # Setup root, user, network
 # Debugging session Begin
