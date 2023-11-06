@@ -132,7 +132,6 @@ the tool you download from github does 3 things.
   1. Open the Imager app and write your image of choice to the emmc or nvme storage on the CM4
   2. Unplug the Jumper or turn off the slave switch and boot your CM4
 
-At this point in the process, the Fedora Blank Screen Bug rears its ugly head. I will describe the other two methods
  
 # Writing to the CM4 eMMC or via dd (Linux)
 
@@ -153,9 +152,29 @@ At this point in the process, the Fedora Blank Screen Bug rears its ugly head. I
 >
 >    Make sure J4 (USB SLAVE BOOT ENABLE) / J2 (nRPI_BOOT) is set to the disabled position and/or nothing is plugged into the USB slave port. Power cycling the IO board should now result in the Compute Module booting from eMMC.
 
-# Write image to the CM4 mass storage with the approved arm-image-installer from Fedora 
+# Post writing to device cleanup
+> Fedora Server and others use LVM for the / (root) directory and the entire drive space is not accessable yet.
+> The image is not automaticlly adjusted to the size of the drive beyond the inital 8GB image.
+> The instructions to do this are quite long and included in the Fedora-Resize-Image.md file included 
+> in this archive
 
-# Debugging session
+
+# WIP Todo List
+# Write image to the CM4 mass storage with the approved arm-image-installer from Fedora 
+# Post Writing Fedora Image 
+# First boot and Setup 
+# Setup root, user, network
+# Debugging session Begin
+> At this point in the process, the Fedora Blank Screen Bug rears its ugly head. I will describe the other two methods
+# Remote access
+> Check if IP address exists, ssh access, Cockpit access
+# Manually access the storage for remote access
+> Set IP
+> set ssh
+# Manually access
+> logs , check
+> linux cmdline boot process
+
 
 # Edit the boot sequence with the boot.conf booloader configurations
 
