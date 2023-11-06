@@ -240,3 +240,10 @@ zram0         11.4G                         disk                                
 
      
    
+Fedora-Image-Resize.md
+First-Boot-Setup.md
+Manual-Debug.md
+Manual-Setup.md
+README.md
+Remote-Access-Setup.md
+tips.md
